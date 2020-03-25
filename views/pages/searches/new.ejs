@@ -3,25 +3,42 @@
   <head>
     <title>Book Collection</title>
   </head>
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/styles/reset.css">
+  <link rel="stylesheet" type="text/css" href="/styles/base.css">
   <body>
     <main>
+      <header>Best Books!</header>
+      <menu>
+        <div></div>
+        <div></div>
+        <div></div>
+      </menu>
       <h4>Search by Title or Author</h4>
       <form action="/searches" method="post">
-        <input type="text" name="search" placeholder="Enter a title or author" required>
-        <fieldset>
+        <input class = "grid-item" type="text" name="search" placeholder="Enter a title or author" required>
+        <fieldset class = "grid-item">
           <label for="title">
             <span>Title</span>
             <input type="radio" name="search" value="title" required>
           </label>
         </fieldset>
-        <fieldset>
+        <fieldset class = "grid-item">
           <label for="author">
             <span>Author</span>
             <input type="radio" name="search" value="author" required>
           </label>
         </fieldset>
-        <button type="submit">Search the Google Books API</button>
+        <button class = "grid-item" type="submit">Search the Google Books API</button>
       </form>
+      <footer>
+        <nav>
+          <li><a href="page.html"><img src="img.png"></a></li>
+          <li><a href="page.html"><img src="img.png"></a></li>
+          <li><a href="page.html"><img src="img.png"></a></li>
+          <li><a href="page.html"><img src="img.png"></a></li>
+        </nav>
+      </footer>
     </main>
   </body>
 </html>
