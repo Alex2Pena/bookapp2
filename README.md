@@ -4,6 +4,6 @@ Estimate of time needed to complete: 5 hr
 
 Start time: 0900
 
-Finish time: N/a
+Finish time: 1100 the next day
 
-Actual time needed to complete: 8 hrs
+Actual time needed to complete: 12 hrs

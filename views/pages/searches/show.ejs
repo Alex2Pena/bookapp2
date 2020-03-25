@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+    <title>Book Collection</title>
+    <link rel="stylesheet" type="text/css" href="/styles/reset.css">
+    <link rel="stylesheet" type="text/css" href="/styles/base.css">
 </head>
 <body>
-  <h1>Results</h1>
-   <ul>
-
-       <% books.forEach(result => { %>
-      <li><%= result.title %></li>
-      <% }); %>
-     
-   </ul>
+    <main>
+        <% books.forEach( book => { %>
+          <article>
+            <img src="<%= book.image_url %>">
+            <h3><%= book.title %></h3>
+            <h4><%= book.author %></h4>
+            <p><%= book.description %></p>
+            <form action="/add" method="post">
+              <button type="submit" name="addToDatabase">Add to Database</button>
+            </form>
+          </article>
+        <% }) %>
+    </main>
 </body>
 </html>
