@@ -12,28 +12,31 @@ app.set('view engine','ejs');// tells express to use ejs and to look for a veiws
 app.use(express.urlencoded({extended: true}));// 'this is the way it likes' ejs requires this to set a static page
 app.use(express.static('./public'));// telling it not to look for index but to look for public instead
 
-
-
+//searche/new is the door you create
+app.get('/searches/new', (request,response)=>{
+  response.render('./pages/searches/new.ejs');
+})
 
 // overwriting the defaults such as index.html
 app.get('/', (request, response) => { // look in public
   response.render('pages/index.ejs');// look for specifically index .ejs and serve that up
 })
 
-app.post('/searches', (request, response) => {
+
+app.post('/searches', (request, response) => {//recives searches from front end 
   console.log(request.body);
   // { search: [ '1984', 'title' ] }
-  let thingTheyAreSearchingFor = request.body.search[0];
-  let titleOrAuthor = request.body.search[1];
+  let thingTheyAreSearchingFor = request.body.search[0];// defining the first result 
+  let titleOrAuthor = request.body.search[1];// defining the next result 
 
-  let url = 'https://www.googleapis.com/books/v1/volumes?q=';
+  let url = 'https://www.googleapis.com/books/v1/volumes?q=';//assigning url to google apis
 
-  if(titleOrAuthor === 'title'){
+  if(titleOrAuthor === 'title'){ //this takes either the title or author to get what your information your looking for 
     url += `+intitle:${thingTheyAreSearchingFor}`;
   } else if(titleOrAuthor === 'author'){
     url += `+inauthor:${thingTheyAreSearchingFor}`;
   }
-
+  console.log(request.body.search);
   superagent.get(url)
     .then(results => {
       let bookArray = results.body.items;
@@ -41,6 +44,7 @@ app.post('/searches', (request, response) => {
         return new Book(book.volumeInfo);
       })
       // send this array of book objects into searches.ejs and render it from there
+      response.render('./pages/searches/show.ejs', {books:finalBookArray} )
       // response.status(200).send(finalBookArray);
     })
 })
