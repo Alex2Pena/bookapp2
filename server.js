@@ -36,38 +36,37 @@ app.post('/searches', (request, response) => {//recives searches from front end
   } else if(titleOrAuthor === 'author'){
     url += `+inauthor:${thingTheyAreSearchingFor}`;
   }
-  console.log(request.body.search);
+  console.log('i am request.body.search' ,request.body.search);
   superagent.get(url)
     .then(results => {
       let bookArray = results.body.items;
       let finalBookArray = bookArray.map(book => {
-        return new Book(book.volumeInfo);
+        return new Book(book);
       })
       // send this array of book objects into searches.ejs and render it from there
-      response.render('./pages/searches/show.ejs', {books:finalBookArray} )
-      // response.status(200).send(finalBookArray);
+      
+    response.render('./pages/searches/show.ejs', {books:finalBookArray} )
+  })
+  .catch(error =>{   //catches errors
+    
+    Error(error, response);
+  });
     })
-})
 
-function Book(obj){
-  const placeholderImage = 'http://i.imgur.com/J5LVHEL.jpg';
-
-  this.title = obj.title;
+function Book(obj) {
+  this.title = obj.volumeInfo.hasOwnProperty('title') ? obj.volumeInfo.title : 'No Title Available';
+  this.author = obj.volumeInfo.hasOwnProperty('authors') ? obj.volumeInfo.authors[0] : 'No Author Available';
+  this.description = obj.volumeInfo.hasOwnProperty('description') ? obj.volumeInfo.description : 'No Description Available';
+  let regex = /^https/;
+  let thumbUrl = obj.volumeInfo.imageLinks.hasOwnProperty('thumbnail') ? obj.volumeInfo.imageLinks.thumbnail : 'https://images.pexels.com/photos/2340254/pexels-photo-2340254.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260';
+  if (!regex.test(thumbUrl)) {
+    let splitUrl = thumbUrl.split('');
+    splitUrl.splice(4,0,'s');
+    thumbUrl = splitUrl.join('');
+  }
+  this.image_url = thumbUrl;
 }
 
-// function Book(obj) {
-//   this.title = obj.volumeInfo.hasOwnProperty('title') ? obj.volumeInfo.title : 'No Title Available';
-//   this.author = obj.volumeInfo.hasOwnProperty('authors') ? obj.volumeInfo.authors[0] : 'No Author Available';
-//   this.description = obj.volumeInfo.hasOwnProperty('description') ? obj.volumeInfo.description : 'No Description Available';
-//   let regex = /^https/;
-//   let thumbUrl = obj.volumeInfo.imageLinks.hasOwnProperty('thumbnail') ? obj.volumeInfo.imageLinks.thumbnail : 'https://images.pexels.com/photos/2340254/pexels-photo-2340254.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260';
-//   if (!regex.test(thumbUrl)) {
-//     let splitUrl = thumbUrl.split('');
-//     splitUrl.splice(4,0,'s');
-//     thumbUrl = splitUrl.join('');
-//   }
-//   this.image_url = thumbUrl;
-// }
 
 
 
@@ -90,8 +89,10 @@ function Book(obj){
 
 
 
-
-
+function Error(error, response){
+  console.error(error);
+  return response.status(500).send('ya done f**kd up joe.');
+}
 app.listen(PORT,()=>{
   console.log(`listening on ${PORT}`)
 
