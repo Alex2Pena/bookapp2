@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="public/styles/reset.css" rel="stylesheet" type="text/css" />
-  <link href="public/styles/base.css" rel="stylesheet" type="text/css" />
-  <title>Document</title>
-</head>
-<body>
-  <header>Hello world</header>
-</body>
+  <head>
+    <title>Book Collection</title>
+    <link rel="stylesheet" type="text/css" href="/styles/reset.css">
+    <link rel="stylesheet" type="text/css" href="/styles/base.css">
+  </head>
+  <body>
+    <main class=collections>
+      <h1>My Book Collection:<%=' ' + bookNumber + " Total books in Library" %></h1>
+      <% bookArray.forEach(element => { %>
+        <a class="button" href="./searches/">New Search</a>
+      <section class="book-view-container">
+        <ul>
+          <li class="title"><%='Title: ' + element.title + '.'%></li>
+          <li class="author"><%='Author: ' + element.author + '.'%></li>
+          <li class= "isbn"><%='ISBN: ' + element.isbn + '.'%></li>
+          <li class= "description"><%='Description: ' + element.description + '.'%></li>
+          <li class= "bookshelf"><%='Bookshelf: ' + element.bookshelf + '.'%></li>
+          <li><img src='<%= element.image_url %>'></img></li>
+        </ul>
+      </section>
+      <% }) %>
+    </main>
+  </body>
 </html>
