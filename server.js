@@ -23,15 +23,16 @@ app.get('/searches/new', (request,response)=>{
 
 
 function renderHomePage(request,response){
+  // response.send('hello');
   let SQL = 'SELECT * FROM books;'
   client.query(SQL)//clinet postgres we are making a query into the clinet and the query is SQL
-  .then(results=>{
-    // console.log(results)
+    .then(results => { 
+      console.log(results.rows)
     // if(results.rows.length === 0) {
     //   response.render('pages/searches/new')
     // } else {
     // response.render('./pages/index.ejs', { bookArray: results.rows })
-    response.render('./index.ejs', {bookArray:results.rows})
+    response.render('./pages/index.ejs', {bookArray:results.rows})
     // }
   }).catch(err => handleError(err, response));
 }
@@ -118,10 +119,14 @@ function handleError(error, response){
   console.error(error);
   response.status(500).send('ya done f**kd up joe.');
 }
-app.listen(PORT,()=>{
-  console.log(`listening on ${PORT}`)
 
-});
+client.connect()
+  .then(() => {
+    app.listen(PORT,()=>{
+      console.log(`listening on ${PORT}`)
+    
+    });
+  })
 
 
 
