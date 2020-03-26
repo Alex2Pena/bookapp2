@@ -12,7 +12,7 @@ app.set('view engine','ejs');// tells express to use ejs and to look for a veiws
 
 app.use(express.urlencoded({extended: true}));// 'this is the way it likes' ejs requires this to set a static page
 app.use(express.static('./public'));// telling it not to look for index but to look for public instead
-
+app.get('/', renderHomePage);
 //searches/new is the door you create
 app.get('/searches/new', (request,response)=>{
   response.render('./pages/searches/new.ejs');
@@ -21,18 +21,30 @@ app.get('/searches/new', (request,response)=>{
 // overwriting the defaults such as index.html
 // need fake data in a database before this will work
 
-app.get('/', renderHomePage);
+
 function renderHomePage(request,response){
-  let SQL = 'SELECT * FROM books'
+  let SQL = 'SELECT * FROM books;'
   client.query(SQL)//clinet postgres we are making a query into the clinet and the query is SQL
   .then(results=>{
-    let books = results.row;
-    let bookNumber = books.length;
-    response.render('/index.ejs', {booksArray: books,bookNumber})
-    // add a .catch
-
-  })
+    // console.log(results)
+    // if(results.rows.length === 0) {
+    //   response.render('pages/searches/new')
+    // } else {
+    // response.render('./pages/index.ejs', { bookArray: results.rows })
+    response.render('./index.ejs', {bookArray:results.rows})
+    // }
+  }).catch(err => handleError(err, response));
 }
+
+// app.post('/add', (request, response) => {
+// let{Title, description} = request.body;
+// let spl = 'INSERT INTO book_app (title,description) VALUES ($1,$2);';
+// let afevalues = title,description;
+// client.query(sql,safeValues)
+// .then(results =>
+//   console.log(results.rows))
+// let id = results.rows.id;
+//find match ing book id , render it to details page
 
 
 
@@ -102,11 +114,17 @@ function Book(obj) {
 
 
 
-function Error(error, response){
+function handleError(error, response){
   console.error(error);
-  return response.status(500).send('ya done f**kd up joe.');
+  response.status(500).send('ya done f**kd up joe.');
 }
 app.listen(PORT,()=>{
   console.log(`listening on ${PORT}`)
 
 });
+
+
+
+
+
+
