@@ -28,11 +28,21 @@ function renderHomePage(request,response){
   .then(results=>{
     let books = results.row;
     let bookNumber = books.length;
-    response.render('/index.ejs', {booksArray: books,bookNumber})
+    response.render('./pages/index.ejs', {booksArray: books,bookNumber})
     // add a .catch
 
   })
 }
+
+// app.post('/add', (request, response) => {
+// let{Title, description} = request.body;
+// let spl = 'INSERT INTO book_app (title,description) VALUES ($1,$2);';
+// let afevalues = title,description;
+// client.query(sql,safeValues)
+// .then(results =>
+//   console.log(results.rows))
+// let id = results.rows.id;
+//find match ing book id , render it to details page
 
 
 
@@ -110,3 +120,9 @@ app.listen(PORT,()=>{
   console.log(`listening on ${PORT}`)
 
 });
+
+
+
+
+
+
