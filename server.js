@@ -4,9 +4,9 @@ const ejs = require('ejs');// opens ejs library
 
 const express = require('express');//allows access to express library
 const app = express();// assigns app to express
-const superagent = require('superagent'); // assigns superagent so you can use it 
+const superagent = require('superagent'); // assigns superagent so you can use it
 const pg = require('pg');
-const client = new pg.Client(process.env.DATABASE_URL);//creating a new client in the database and having it look into the env file to find what port we are listening to 
+const client = new pg.Client(process.env.DATABASE_URL);//creating a new client in the database and having it look into the env file to find what port we are listening to
 const PORT = process.env.PORT || 3001;//assigns varible to port number in env file
 app.set('view engine','ejs');// tells express to use ejs and to look for a veiws folder
 
@@ -26,15 +26,12 @@ function renderHomePage(request,response){
   // response.send('hello');
   let SQL = 'SELECT * FROM books;'
   client.query(SQL)//clinet postgres we are making a query into the clinet and the query is SQL
-    .then(results => { 
-      console.log(results.rows)
-    // if(results.rows.length === 0) {
-    //   response.render('pages/searches/new')
-    // } else {
-    // response.render('./pages/index.ejs', { bookArray: results.rows })
-    response.render('./pages/index.ejs', {bookArray:results.rows})
-    // }
-  }).catch(err => handleError(err, response));
+    .then(results =>{
+      let books = results.rows;
+      let bookNumber = books.length;
+      console.log('I am book #', bookNumber);
+      response.render('./pages/index.ejs', {bookArray:books, bookNumber})
+    }).catch(err => handleError(err, response));
 }
 
 // app.post('/add', (request, response) => {
@@ -49,15 +46,15 @@ function renderHomePage(request,response){
 
 
 
-app.post('/searches', (request, response) => {//recives searches from front end 
+app.post('/searches', (request, response) => {//recives searches from front end
   console.log(request.body);
   // { search: [ '1984', 'title' ] }
-  let thingTheyAreSearchingFor = request.body.search[0];// defining the first result 
-  let titleOrAuthor = request.body.search[1];// defining the next result 
+  let thingTheyAreSearchingFor = request.body.search[0];// defining the first result
+  let titleOrAuthor = request.body.search[1];// defining the next result
 
   let url = 'https://www.googleapis.com/books/v1/volumes?q=';//assigning url to google apis
 
-  if(titleOrAuthor === 'title'){ //this takes either the title or author to get what your information your looking for 
+  if(titleOrAuthor === 'title'){ //this takes either the title or author to get what your information your looking for
     url += `+intitle:${thingTheyAreSearchingFor}`;
   } else if(titleOrAuthor === 'author'){
     url += `+inauthor:${thingTheyAreSearchingFor}`;
@@ -70,14 +67,14 @@ app.post('/searches', (request, response) => {//recives searches from front end
         return new Book(book);
       })
       // send this array of book objects into searches.ejs and render it from there
-      
-    response.render('./pages/searches/show.ejs', {books:finalBookArray} )
-  })
-  .catch(error =>{   //catches errors
 
-    Error(error, response);
-  });
+      response.render('./pages/searches/show.ejs', {books:finalBookArray} )
     })
+    .catch(error =>{ //catches errors
+
+      Error(error, response);
+    });
+})
 
 function Book(obj) {
   this.title = obj.volumeInfo.hasOwnProperty('title') ? obj.volumeInfo.title : 'No Title Available';
@@ -124,7 +121,7 @@ client.connect()
   .then(() => {
     app.listen(PORT,()=>{
       console.log(`listening on ${PORT}`)
-    
+
     });
   })
 
