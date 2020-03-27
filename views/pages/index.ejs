@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../layout/head') %>
+  </head>
+  <body>
+    <main class=collections>
+      <a class="button" href="/searches/new">New Search</a>
+      <h1>My Book Collection: <%=bookNumber%> Total books in Library</h1> 
+      <% bookArray.forEach(book => { %>
+        <%- include('books/details.ejs', {book: book}) %>
+      <% }) %>
+    </main>
+    <nav>
+      <%- include('../layout/footer') %>
+    </nav>
+  </body>
+</html>
+
